@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=KEY&callback=initMap&libraries=places&v=weekly">
+</script>
+
+<div class="container">
+    <div class="jumbotron text-center">
+        <h1>Parking Management Web App</h1>
+        <p>A service that finds parking spots for you!</p>
+    </div>
+
+    <partial name="_InputSearch"></partial>
+
+    <div class="container mt-5 w-100">
+        <div class="row mt-3 pt-3 g-2 gx-4">
+            <div class="col-md-8 w-50">
+                <img style="width:500px;" src="https://i.ibb.co/qYQ73tB/Why-a-Parking-App-Is-the-New-Black-removebg-preview.png">
+            </div>
+            <div class="col-md-5 gx-2 gy-3 ms-5">
+                <img style="width:500px;" src="https://i.ibb.co/RDhW9k6/Issues-You-Can-Solve-With-a-Parking-App-removebg-preview.png">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize Google Places Autocomplete
+    function initMap() {
+        const input = document.getElementById("search_input");
+        const range_input = document.getElementById("range_input");
+        const options = {
+            componentRestrictions: { country: "CA" },
+            fields: ["address_components", "geometry", "icon", "name", "formatted_address", "place_id"],
+            strictBounds: false,
+        };
+        const autocomplete = new google.maps.places.Autocomplete(input, options);
+
+        // Add event listener for when the place is changed
+        autocomplete.addListener("place_changed", function () {
+            const place = autocomplete.getPlace();
+            console.log(place);
+            // Check if a place is selected
+            if (place.geometry && place.geometry.location) {
+                const latitude = place.geometry.location.lat();
+                const longitude = place.geometry.location.lng();
+                console.log(longitude);
+                console.log(latitude);
+                // Update the URL with latitude and longitude parameters
+                const newUrl = `/ParkingGarage/Results?latitude=${latitude}&longitude=${longitude}&range=${range_input.value}&address=${input.value}`;
+                window.location.href = newUrl;
+                
+            }
+        });
+    }
+</script>

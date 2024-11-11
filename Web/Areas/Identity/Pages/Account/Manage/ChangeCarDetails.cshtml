@@ -1,0 +1,46 @@
+﻿@page
+@model Web.Areas.Identity.Pages.Account.Manage.ChangeCarDetailsModel
+@{
+}
+
+@{
+    ViewData["Title"] = "Change car details";
+    ViewData["ActivePage"] = ManageNavPages.ChangeCarDetails;
+}
+
+<h3>@ViewData["Title"]</h3>
+<form method="post">
+    <fieldset>
+
+
+        <div class="form-group  ">
+            <label for="CarMake" class="form-label mt-4">Car Make</label>
+            <input type="text" class="form-control w-50" name="CarMake" value="@ViewData["CarMake"]" placeholder="Enter your car make" autocomplete="off" required>
+        </div>
+        <div class="form-group">
+            <label for="CarModel" class="form-label mt-4">Car Model</label>
+            <input type="text" class="form-control w-50" name="CarModel" value="@ViewData["CarModel"]" placeholder="Enter your car model" autocomplete="off" required>
+        </div>
+        <div class="form-group">
+            <label for="licensePlates" class="form-label mt-4">License Plates</label>
+            <input type="text" class="form-control w-50" name="licensePlates" value="@ViewData["LicensePlates"]" placeholder="Enter your license plates" autocomplete="off" required>
+        </div>
+        <div class="form-group">
+            <label for="carColour" class="form-label mt-4">Car Colour</label>
+            <input type="text" class="form-control w-50" name="carColour" value="@ViewData["CarColour"]" placeholder="Enter your car colour" autocomplete="off" required>
+        </div>
+        <br />
+
+        <button type="submit" class="btn  btn-primary mb-5">Update car details</button>
+
+
+    </fieldset>
+    <br />
+
+
+
+</form>
+has context menu
+
+
+has context menu

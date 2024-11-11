@@ -1,0 +1,84 @@
+﻿<!-- Button trigger modal -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+@* <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.1/js/bootstrap.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.1/css/bootstrap.min.css" rel="stylesheet" /> *@
+
+<div class="container-fluid">
+    <div class="jumbotron text-center">
+        <h1>Parking Management</h1>
+        <p>A service that finds parking spots for you!</p>
+    </div>
+
+    <div>
+        <form class="searchBar d-flex" method="post" asp-controller="ParkingGarage" asp-action="Results" id="main_form">
+            <input id="search_input" class="form-control me-sm-2" type="search" placeholder="Search for a location">
+            <button class="btn btn-secondary my-2 my-sm-0" style="color: #3a649b; background-color:#a9bddf" type="button" onclick="submitForm()">Search</button>
+
+            <!-- Hidden input fields for latitude and longitude -->
+            <input type="hidden" id="latitude" name="latitude" />
+            <input type="hidden" id="longitude" name="longitude" />
+        </form>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-6">
+                <h3>Place holder for future info</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+    
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Car Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="carDetailsForm" method="post" asp-controller="Home" asp-action="Index">
+                    <fieldset>
+                        
+                        
+                        <div class="form-group">
+                            <label for="CarMake" class="form-label mt-4">Car Make</label>
+                            <input type="text" class="form-control" name="CarMake" placeholder="Enter your car make" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="CarModel" class="form-label mt-4">Car Model</label>
+                            <input type="text" class="form-control" name="CarModel" placeholder="Enter your car model" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="licensePlates" class="form-label mt-4">License Plates</label>
+                            <input type="text" class="form-control" name="LicensePlates" placeholder="Enter your license plates" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="carColour" class="form-label mt-4">Car Colour</label>
+                            <input type="text" class="form-control" name="carColour" placeholder="Enter your car colour" autocomplete="off" required>
+                        </div>
+                        
+                    </fieldset>
+                       
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" asp-controller="Home" asp-action="Index">Save changes</button>
+                        <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Skip</a>
+
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+    
+</div>
+<script type="text/javascript">
+    $(window).load(function () {
+        $('#myModal').modal('show');
+    });
+</script>

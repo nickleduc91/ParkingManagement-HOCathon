@@ -1,0 +1,94 @@
+﻿@model ParkingGarageBookViewModel
+
+
+@{
+    ViewData["Title"] = "Book Page";
+}
+@using Microsoft.AspNetCore.Identity
+@using Infrastructure.Identity;
+@inject SignInManager<ParkingUser> SignInManager
+@inject UserManager<ParkingUser> UserManager
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=KEY&callback=initMap&libraries=places&v=weekly">
+</script>
+
+<partial name="_Details" for="@Model.Details"></partial>
+
+<div class="modal fade" id="booking" tabindex="-1" role="dialog">
+
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content bg-white">
+            <div class="modal-header">
+                <h5 class="modal-title">Booking Details</h5>
+                <a class="btn-close" asp-controller="ParkingGarage" asp-action="Details" asp-route-garageId="@Model.Details.ParkingGarage.Id">
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Directions: @Model.ParkingSpot.Directions
+                </p>
+                <p>
+                    Parking spot: Parking Spot #@Model.ParkingSpot.ParkingSpotNumber
+                </p>
+                <p>
+                    Login or Register now to book this parking spot!
+                </p>
+            </div>
+            <form asp-controller="ParkingGarage" asp-action="ConfirmBook" method="post" asp-route-spotId="@Model.ParkingSpot.Id">
+                <div class="modal-footer">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <button type="submit" class="btn btn-primary">Book</button>
+                    }
+                    else
+                    {
+                        <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    $(window).load(function () {
+        $('#booking').modal('show');
+    });
+
+    var map;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: @Model.Details.ParkingGarage.Latitude , lng: @Model.Details.ParkingGarage.Longitude },
+            zoom: 17,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        var marker = new google.maps.Marker({
+            position: { lat: @Model.Details.ParkingGarage.Latitude , lng: @Model.Details.ParkingGarage.Longitude },
+            map: map,
+        });
+
+        var content = '<div class="info_content">' +
+            '<h2>' + garage.name + '</h2>' +
+            '<p>Address: ' + garage.address + '</p>' +
+            '</div>';
+
+        attachInfoWindow(marker, content);
+
+    }
+
+    function attachInfoWindow(marker, content) {
+        var infoWindow = new google.maps.InfoWindow();
+
+        google.maps.event.addListener(marker, 'click', function () {
+            infoWindow.setContent(content);
+            infoWindow.open(map, marker);
+        });
+    }
+</script>

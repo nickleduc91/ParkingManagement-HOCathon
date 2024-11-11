@@ -1,0 +1,160 @@
+﻿@model ParkingGarageResultsViewModel
+
+@{
+    ViewData["Title"] = "Results Page";
+}
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=KEY&callback=initMap&libraries=places&v=weekly">
+</script>
+
+
+<div class="container mt-5">
+    <partial name="_InputSearch" for="@Model"></partial>
+    <div class="row">
+        <div class="col-md-6">
+            <header class="mb-2 text-center" style="font-weight: 700; color: #27346a">@Model.ParkingGarages.Count Available Garages:</header>
+            @if (Model.ParkingGarages.Count > 0)
+            {
+                <ul style="max-height: 62vh; overflow-y: auto;">
+                    @foreach (var garageViewModel in Model.ParkingGarages)
+                    {
+                        <li class="list-group-item m-3 ">
+                            <a asp-controller="ParkingGarage" class="list-group-item" asp-action="Details" asp-route-garageId="@garageViewModel.Id">
+                                <div class="card bg-light pt-2 me-2 ms-2 mt-0 mb-0">
+                                    <div class="container ">
+                                        <div class="mb-1" style="font-weight: 700; color: #27346a">
+                                            @garageViewModel.Name
+                                        </div>
+                                        <div class="mb-4" style="font-weight: 200">
+                                            @garageViewModel.Address
+                                        </div>
+
+                                        <div class="container  ">
+                                            <span class="badge bg-primary rounded-pill mb-2  ">@garageViewModel.NumAvailableParkingSpots Available Spots</span>
+                                            <span class="badge bg-secondary rounded-pill mx-1 mb-2 ">@garageViewModel.UserDistance km away</span>
+                                            @if (garageViewModel.IsOutdoor)
+                                            {
+                                                <span class="badge bg-warning rounded-pill mx-1 mb-2 ">Outdoors</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success rounded-pill  mx-1 mb-2">Indoors</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <h5 class="text-center">There are no garages within @Model.Range kilometers of your query.</h5>
+            }
+        </div>
+        <div class="col-md-6">
+            <header class="mb-2 text-center" style="font-weight: 700; color: #27346a">Map:</header>
+            <div class="card mb-3">
+                
+                <div class="card-body">
+                    <div class="conatainer" id="map" style="height: 56vh;"></div>
+                </div>
+
+            </div>
+
+        </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+    var map;
+    var markers = [];
+
+    function initMap() {
+
+        const input = document.getElementById("search_input");
+        const range_input = document.getElementById("range_input");
+        const options = {
+            componentRestrictions: { country: "CA" },
+            fields: ["address_components", "geometry", "icon", "name", "formatted_address", "place_id"],
+            strictBounds: false,
+        };
+        const autocomplete = new google.maps.places.Autocomplete(input, options);
+
+        // Add event listener for when the place is changed
+        autocomplete.addListener("place_changed", function () {
+            const place = autocomplete.getPlace();
+            console.log(place);
+            // Check if a place is selected
+            if (place.geometry && place.geometry.location) {
+                const latitude = place.geometry.location.lat();
+                const longitude = place.geometry.location.lng();
+                console.log(longitude);
+                console.log(latitude);
+                // Update the URL with latitude and longitude parameters
+                const newUrl = `/ParkingGarage/Results?latitude=${latitude}&longitude=${longitude}&range=${range_input.value}&address=${input.value}`;
+                window.location.href = newUrl;
+
+            }
+        });
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: @Model.SearchLat, lng: @Model.SearchLong },
+            zoom: 13,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        // Add marker for the queried address
+        var queryMarker = new google.maps.Marker({
+            position: { lat: @Model.SearchLat, lng: @Model.SearchLong },
+            map: map,
+            title: "Target Address",
+            icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'  // Change color to green
+        });
+
+        markers.push(queryMarker);
+
+        // Add multiple markers to map
+        var garages = @Json.Serialize(Model.ParkingGarages);
+
+        // Iterate through the parking garages and add markers
+        for (var i = 0; i < garages.length; i++) {
+            var garage = garages[i];
+            var marker = new google.maps.Marker({
+                position: { lat: garage.latitude, lng: garage.longitude },
+                map: map,
+            });
+
+            markers.push(marker);
+
+            var content = '<div class="info_content">' +
+                '<h2>' + garage.name + '</h2>' +
+                '<p>Address: ' + garage.address + '</p>' +
+                '</div>';
+
+            attachInfoWindow(marker, content);
+        }
+
+        // Center the map on the bounds of all markers
+        if (markers.length > 1) {
+            var bounds = new google.maps.LatLngBounds();
+            markers.forEach(function (marker) {
+                bounds.extend(marker.getPosition());
+            });
+            map.fitBounds(bounds);
+        }
+    }
+
+    function attachInfoWindow(marker, content) {
+        var infoWindow = new google.maps.InfoWindow();
+
+        google.maps.event.addListener(marker, 'click', function () {
+            infoWindow.setContent(content);
+            infoWindow.open(map, marker);
+        });
+    }
+</script>

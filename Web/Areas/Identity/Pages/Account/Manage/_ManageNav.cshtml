@@ -1,0 +1,18 @@
+﻿@inject SignInManager<ParkingUser> SignInManager
+@inject UserManager<ParkingUser> UserManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
+<ul class="nav nav-pills flex-column">
+    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
+    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
+    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangeCarDetailsNavClass(ViewContext)" id="change-car-details" asp-page="./ChangeCarDetails">Car Details</a></li>
+    <li class="nav-item"><a class="nav-link @ManageNavPages.MyBookingsNavClass(ViewContext)" id="my-bookings" asp-page="./MyBookings">My Bookings</a></li>
+    @if(User.IsInRole("Owner"))
+    {
+        <li class=" mt-2 mb-2" style="font-weight: 700; color: #27346a; border-bottom: 2px solid #27346a">Owner Role</li>
+        <li class="nav-item"><a class="nav-link @ManageNavPages.AddGarageNavClass(ViewContext)" id="add-garage" asp-page="./AddGarage">Add Garage</a></li>
+        <li class="nav-item"><a class="nav-link @ManageNavPages.MyGaragesNavClass(ViewContext)" id="my-garages" asp-page="./MyGarages">My Garages</a></li>
+    }
+    
+</ul>

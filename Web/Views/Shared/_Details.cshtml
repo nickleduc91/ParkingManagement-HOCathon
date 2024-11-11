@@ -1,0 +1,95 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model ParkingGarageDetailsViewModel
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=KEY&callback=initMap&libraries=places&v=weekly">
+</script>
+
+
+<div class="container">
+    <div class="d-grid mt-auto">
+        <div class="text-center justify-content-center mt-5 fs-3">
+            Book a Parking Spot from <span style="font-weight: 700; color: #27346a">@Model.ParkingGarage.Name</span>
+        </div>
+        <div class="row mt-3 pt-3 g-2 gx-4">
+            <div class="col-md-5">
+                @foreach (var parkingSpot in Model.ParkingSpots.OrderBy(x => x.ParkingSpotNumber))
+                {
+                    <a type="button" asp-controller="ParkingGarage" asp-action="Book" asp-route-spotId="@parkingSpot.Id"
+                       class="btn btn-outline-light align-content-center mt-2 @((parkingSpot.IsAvailable ? "bg-white" : "bg-secondary disabled"))">
+                        Parking Spot @parkingSpot.ParkingSpotNumber
+                    </a>
+                }
+            </div>
+            <div class="col-md-3">
+                <div class="card mb-3">
+                    <h3 class="card-header">Garage Details</h3>
+                    <div class="card-body">
+                        <h5 class="card-title d-inline-block">@Model.ParkingGarage.Address</h5>
+                        <img src="@Model.ParkingGarage.PhotoURL" class="img-fluid" alt="Parking Garage Photo" />
+                    </div>
+                    <div class="container">
+                        <span class="badge bg-success rounded-pill mb-2">@Model.ParkingGarage.NumParkingSpots Total Spots</span>
+                        <span class="badge bg-primary rounded-pill mb-2">@Model.ParkingGarage.NumAvailableParkingSpots Available Spots</span>
+                        @if (Model.ParkingGarage.IsOutdoor)
+                        {
+                            <span class="badge bg-warning rounded-pill mx-1 mb-2">Outdoors</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success rounded-pill mx-1 mb-2">Indoors</span>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <h3 class="card-header">Garage Map</h3>
+                    <div class="card-body">
+                        <div class="conatainer" id="map" style="height: 275px;"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var map;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: @Model.ParkingGarage.Latitude , lng: @Model.ParkingGarage.Longitude },
+            zoom: 17,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        var marker = new google.maps.Marker({
+            position: { lat: @Model.ParkingGarage.Latitude , lng: @Model.ParkingGarage.Longitude },
+            map: map,
+        });
+
+        var content = '<div class="info_content">' +
+            '<h2>' + garage.name + '</h2>' +
+            '<p>Address: ' + garage.address + '</p>' +
+            '</div>';
+
+        attachInfoWindow(marker, content);
+
+    }
+
+    function attachInfoWindow(marker, content) {
+        var infoWindow = new google.maps.InfoWindow();
+
+        google.maps.event.addListener(marker, 'click', function () {
+            infoWindow.setContent(content);
+            infoWindow.open(map, marker);
+        });
+    }
+</script>
