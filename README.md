@@ -1,20 +1,22 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# House of Commons Parking Management Web App
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+This project is a web application developed as part of a hackathon competition for the House of Commons, where it secured first place. The application provides a smart parking management solution that streamlines parking access and helps users locate parking based on location information.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+## Features
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+- **Location-Based Parking Search**: Integrated Google Places and Photos APIs to allow users to search for parking lots based on their location and view images for better visualization.
+- **Secure Login System**: Developed a secure login and user account management system using SQL and Entity Framework Core, ensuring safe and reliable user authentication.
+- **Clean Architecture**: Built with ASP.NET Core, the application follows the MVC Clean Architecture pattern, enhancing modularity, scalability, and ease of maintenance.
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+## Development
+
+This application was developed in collaboration with a co-op student during a hackathon-like competition, demonstrating innovative problem-solving and effective teamwork.
+
+## Tech Stack
+
+- **Backend**: ASP.NET Core, Entity Framework Core
+- **Frontend**: MVC Clean Architecture
+- **Database**: SQL Server
+- **APIs**: Google Places API, Google Photos API
+
+This project exemplifies efficient, secure, and user-centered design, enhancing the parking experience within the House of Commons.
